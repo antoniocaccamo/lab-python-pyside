@@ -1,12 +1,10 @@
-
-import logging
-from PySide6.QtCore import Slot, QTimer, QTime, Signal
-from PySide6.QtGui import QAction
-from PySide6.QtWidgets import QWidget, QVBoxLayout, QLabel, QMainWindow, QTabWidget, QSystemTrayIcon, QMenu, \
-    QApplication, QLCDNumber, QProgressBar, QGroupBox
 import datetime
-from media import BaseMedia, MediaTypeEnum
+import logging
 
+from PySide6.QtCore import Slot, QTimer, QTime, Signal
+from PySide6.QtWidgets import QWidget, QVBoxLayout, QLCDNumber
+
+from media import BaseMedia, MediaTypeEnum
 
 
 class BasePlayerWidget(QWidget):
@@ -18,13 +16,13 @@ class BasePlayerWidget(QWidget):
     _timer: QTimer
     _startedAt: datetime.datetime
     _pausedAt: datetime.datetime
-    _player_for : MediaTypeEnum
-    _current_media : BaseMedia
+    _player_for: MediaTypeEnum
+    _current_media: BaseMedia
 
     media_progess = Signal(float)
-    media_ended   = Signal()
+    media_ended = Signal()
 
-    def __init__(self, parent: QWidget, player_for : MediaTypeEnum):
+    def __init__(self, parent: QWidget, player_for: MediaTypeEnum):
         super().__init__(parent)
         self.logger = logging.getLogger(
             f"{__name__}.{self.__class__.__name__}",
@@ -32,7 +30,7 @@ class BasePlayerWidget(QWidget):
         self._player_for = player_for
         self._timer = QTimer()
 
-    def play(self, media : BaseMedia):
+    def play(self, media: BaseMedia):
         assert media is not None
         self._reset()
         self._current_media = media
@@ -60,13 +58,14 @@ class BasePlayerWidget(QWidget):
 
     @Slot()
     def _tick(self):
-        elapsed : datetime.timedelta =  datetime.datetime.now() - self._startedAt
+        elapsed: datetime.timedelta = datetime.datetime.now() - self._startedAt
         if self._pausedAt is not None:
             elapsed += self._pausedAt
-        #self.logger.info( f"progress {elapsed.total_seconds():0.2f} / {self._current_media.duration:0.2f} ")
+        # self.logger.info( f"progress {elapsed.total_seconds():0.2f} / {self._current_media.duration:0.2f} ")
         self.media_progess.emit(elapsed.total_seconds())
-        if ( elapsed.total_seconds() > self._current_media.duration  ):
+        if (elapsed.total_seconds() > self._current_media.duration):
             self.next()
+
 
 class BlackPlayerWidget(BasePlayerWidget):
     def __init__(self, parent: QWidget = None):
@@ -92,7 +91,7 @@ class WebPlayerWidget(BasePlayerWidget):
         pass
 
 
-class DigitalClocPlayerkWidget(BasePlayerWidget):
+class DigitalClockPlayerkWidget(BasePlayerWidget):
     """
     
     """

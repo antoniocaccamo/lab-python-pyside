@@ -3,22 +3,24 @@ from enum import Enum
 
 from typing import List
 
+
 class MediaTypeEnum(Enum):
-    Black  = 0
+    Black = 0
     Hidden = 1
-    Watch  = 2
-    Photo  = 3
-    Video  = 5
-    Web    = 6
+    Watch = 2
+    Photo = 3
+    Video = 5
+    Web = 6
+
 
 class BaseMedia:
     """
 
     """
-    _duration : float = 5.0
-    _days  = [True,True,True,True,True,True,True]
+    _duration: float = 5.0
+    _days = [True, True, True, True, True, True, True]
 
-    def __init__(self, media_type : MediaTypeEnum) -> None:
+    def __init__(self, media_type: MediaTypeEnum) -> None:
         self._media_type = media_type
         self.logger = logging.getLogger(
             f"{__name__}.{self.__class__.__name__}",
@@ -33,8 +35,8 @@ class BaseMedia:
         return self._duration
 
     @duration.setter
-    def duration(self, value : float):
-        self._duration=value
+    def duration(self, value: float):
+        self._duration = value
 
     def is_playable(self) -> bool:
         return True
@@ -42,18 +44,21 @@ class BaseMedia:
     def __str__(self) -> str:
         return f"media_type {self._media_type} duration {self._duration:0.2f} days {self._days}"
 
+
 class WatchMedia(BaseMedia):
     """
 
     """
+
     def __init__(self):
         super().__init__(MediaTypeEnum.Watch)
+
 
 class MediaPlaylist:
     """
 
     """
-    _play_list : List[BaseMedia] = list()
+    _play_list: List[BaseMedia] = list()
 
     def __init__(self) -> None:
         self.logger = logging.getLogger(

@@ -1,23 +1,20 @@
-import datetime
 import logging
-from datetime import timedelta
 from typing import List, Dict
 
-from PySide6.QtCore import Slot, QTimer, QTime, Signal
+from PySide6.QtCore import Slot, Signal
 from PySide6.QtGui import QAction
 from PySide6.QtWidgets import QWidget, QVBoxLayout, QLabel, QMainWindow, QTabWidget, QSystemTrayIcon, QMenu, \
-    QApplication, QLCDNumber, QProgressBar, QGroupBox
+    QApplication, QProgressBar, QGroupBox, QStackedLayout
 from dependency_injector.wiring import Provide
 
 from containers import Container
+from media import BaseMedia, WatchMedia, MediaTypeEnum
 from preferences import Setting
 from services import PreferenceService
-from media import BaseMedia, WatchMedia, MediaTypeEnum
-from ui.players import BasePlayerWidget, DigitalClocPlayerkWidget
+from ui.players import BasePlayerWidget, DigitalClockPlayerkWidget, BlackPlayerWidget, HiddenPlayerWidget
 
 
 class BaseWidget(QWidget):
-
 
     def __init__(self, parent: QWidget = None):
         super().__init__(parent)
@@ -26,32 +23,36 @@ class BaseWidget(QWidget):
         )
 
 
-
 class ScreenWindow(BaseWidget):
     """
     This "window" is a QWidget. If it has no parent, it
     will appear as a free-floating window as we want.
     """
     _index = 0
-    _current_player_widget : BasePlayerWidget
-    _current_media : BaseMedia = None
+    _current_player_widget: BasePlayerWidget
+    _current_media: BaseMedia = None
     _screenWidgets: Dict[str, BasePlayerWidget]
 
     media_progess = Signal(float)
 
     def __init__(self, parent: QWidget = None, index: int = 0):
         super().__init__(parent)
-        self.setLayout(QVBoxLayout())
+        layout = QStackedLayout()
+        layout.setStackingMode(QStackedLayout.StackingMode.StackOne)
+        self.setLayout(layout)
         self._index = index
         self.setWindowTitle(f"{self}")
-        clock = DigitalClocPlayerkWidget(self)
+
         self._screenWidgets = {
-            MediaTypeEnum.Watch : clock
+            MediaTypeEnum.Black: BlackPlayerWidget(self),
+            MediaTypeEnum.Hidden: HiddenPlayerWidget(self),
+            MediaTypeEnum.Watch: DigitalClockPlayerkWidget(self)
         }
-        self._current_player_widget = clock
-        self.layout().addWidget(clock)
+        # self._current_player_widget = clock
+        for wdgt in self._screenWidgets.values():
+            self.layout().addWidget(wdgt)
         self._current_media = WatchMedia()
-        self._current_media.duration= 5.0
+        self._current_media.duration = 5.0
         self.logger.info(f"{self} created ")
 
         self.play()
@@ -61,13 +62,12 @@ class ScreenWindow(BaseWidget):
 
     def play(self) -> None:
         self.logger.info(f"{self} playing  [{self._current_media}] ")
-        self._current_player_widget = \
-            self._screenWidgets.get(self._current_media._media_type)
+        self.layout().setCurrentIndex(self._current_media.media_type.value)
+        self._current_player_widget = self.layout().currentWidget()
         self._current_player_widget.media_progess.connect(self.on_media_progress)
         self._current_player_widget.media_ended.connect(self.next)
         self.media_progess.emit(0)
         self._current_player_widget.play(self._current_media)
-
 
     def next(self):
         self.logger.info(f"{self} endend   [{self._current_media}]")
@@ -75,8 +75,10 @@ class ScreenWindow(BaseWidget):
 
     @Slot(float)
     def on_media_progress(self, progress: float):
-        self.logger.debug(f"{self} progress [{self._current_media}]: {progress:0.2f} / {self._current_media.duration:0.2f} ")
-        self.media_progess.emit(progress*100/self._current_media.duration)
+        self.logger.debug(
+            f"{self} progress [{self._current_media}]: {progress:0.2f} / {self._current_media.duration:0.2f} ")
+        self.media_progess.emit(progress * 100 / self._current_media.duration)
+
 
 class SettingWidget(BaseWidget):
     """
@@ -92,7 +94,7 @@ class SettingWidget(BaseWidget):
         grop_box = QGroupBox(self, "Current Media")
         grop_box.setWindowTitle("media")
         grop_box.setLayout(QVBoxLayout())
-        self.progress_bar = QProgressBar(grop_box,minimum=0,maximum=100)
+        self.progress_bar = QProgressBar(grop_box, minimum=0, maximum=100)
         grop_box.layout().addWidget(self.progress_bar)
         self.progress_bar.setValue(0)
         layout.addWidget(self.label)
@@ -106,7 +108,6 @@ class SettingWidget(BaseWidget):
         self.window.media_progess.connect(self.on_media_progress)
         self.window.show()
 
-
     @Slot(float)
     def on_media_progress(self, progress: float):
         self.logger.debug(f"{self} progress  {progress:0.2f}  ")
@@ -114,6 +115,7 @@ class SettingWidget(BaseWidget):
 
     def __str__(self):
         return f"setting window {self._setting.index + 1}:"
+
 
 class MainWindow(QMainWindow):
     """
