@@ -11,7 +11,8 @@ from containers import Container
 from media import BaseMedia, WatchMedia, MediaTypeEnum
 from preferences import Setting
 from services import PreferenceService
-from ui.players import BasePlayerWidget, DigitalClockPlayerkWidget, BlackPlayerWidget, HiddenPlayerWidget
+from ui.players import BasePlayerWidget, DigitalClockPlayerWidget, BlackPlayerWidget, HiddenPlayerWidget, \
+    PhotoPlayerWidget, VideoPlayerWidget, WebPlayerWidget
 
 
 class BaseWidget(QWidget):
@@ -46,7 +47,10 @@ class ScreenWindow(BaseWidget):
         self._screenWidgets = {
             MediaTypeEnum.Black: BlackPlayerWidget(self),
             MediaTypeEnum.Hidden: HiddenPlayerWidget(self),
-            MediaTypeEnum.Watch: DigitalClockPlayerkWidget(self)
+            MediaTypeEnum.Watch: DigitalClockPlayerWidget(self),
+            MediaTypeEnum.Photo: PhotoPlayerWidget(self),
+            MediaTypeEnum.Video: VideoPlayerWidget(self),
+            MediaTypeEnum.Web : WebPlayerWidget(self)
         }
         # self._current_player_widget = clock
         for wdgt in self._screenWidgets.values():
@@ -70,13 +74,12 @@ class ScreenWindow(BaseWidget):
         self._current_player_widget.play(self._current_media)
 
     def next(self):
-        self.logger.info(f"{self} endend   [{self._current_media}]")
+        self.logger.info(f"{self} ended    [{self._current_media}]")
         self.play()
 
     @Slot(float)
     def on_media_progress(self, progress: float):
-        self.logger.debug(
-            f"{self} progress [{self._current_media}]: {progress:0.2f} / {self._current_media.duration:0.2f} ")
+        self.logger.debug(f"{self} progress [{self._current_media}]: {progress:0.2f} / {self._current_media.duration:0.2f} ")
         self.media_progess.emit(progress * 100 / self._current_media.duration)
 
 
