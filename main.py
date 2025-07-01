@@ -5,9 +5,10 @@ import sys
 from PySide6.QtGui import QIcon
 from PySide6.QtWidgets import QApplication
 
-from ui import MainWindow
+from ui.mainwindow import MainWindow
 
 props = {}
+
 from containers import Container
 
 if __name__ == "__main__":
@@ -19,7 +20,7 @@ if __name__ == "__main__":
     container.wire(modules=[__name__])
 
     app = QApplication(sys.argv)
-    app.setWindowIcon(QIcon(os.path.join(path, "./images/playlist.png")))
+    app.setWindowIcon(QIcon(":/icons/pyplayer.ico"))
     window = MainWindow()
     window.show()
     app.exec()

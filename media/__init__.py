@@ -1,6 +1,6 @@
 import logging
 from enum import Enum
-
+import __future__
 from typing import List
 
 
@@ -17,6 +17,7 @@ class BaseMedia:
     """
 
     """
+
     _duration: float = 5.0
     _days = [True, True, True, True, True, True, True]
 
@@ -58,6 +59,7 @@ class MediaPlaylist:
     """
 
     """
+    
     _play_list: List[BaseMedia] = list()
 
     def __init__(self) -> None:

@@ -1,5 +1,5 @@
 import logging
-
+import __future__
 import javaproperties
 
 from preferences import Preference, Size, Position, Setting
