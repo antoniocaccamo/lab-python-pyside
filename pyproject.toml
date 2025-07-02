@@ -1,0 +1,20 @@
+[project]
+name = "lab-python-pyside"
+version = "0.1.0"
+description = ""
+authors = [
+    {name = "caccamo antonio",email = "caccamo.antonio@gmail.com"}
+]
+readme = "README.md"
+requires-python = "<3.14,>=3.9"
+dependencies = [
+    "pyside6 (>=6.9.1,<7.0.0)",
+    "logging (>=0.4.9.6,<0.5.0.0)",
+    "javaproperties (>=0.8.2,<0.9.0)",
+    "pytest (>=8.4.1,<9.0.0)"
+]
+
+
+[build-system]
+requires = ["poetry-core>=2.0.0,<3.0.0"]
+build-backend = "poetry.core.masonry.api"
