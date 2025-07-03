@@ -1,3 +1,4 @@
+from __future__ import annotations
 from preferences import Setting
 
 from PySide6.QtGui import QIcon
@@ -45,14 +46,15 @@ class SettingWidget(BaseWidget):
         self.checkbox_lock.checkStateChanged.connect(lambda state: self.setting_tab_widget.setEnabled(   False if state ==  Qt.CheckState.Checked else True  ))
         self.setting_tab_widget.addTab(self.defineMediaPlaylistTab(), "Media Playlist")
         self.setting_tab_widget.addTab(self.defineTimingTab(), "Timing")
-        self.setting_tab_widget.addTab(self.defineSizeDimensionsTab(), "Size & Dimensions")
+        self.setting_tab_widget.addTab(self.defineSizeDimensionsTab(), self.tr("Size & Dimensions"))
         layout.addWidget(self.setting_tab_widget)
 
         self.setLayout(layout)
         
+        self.button_play.setDown(True) 
+        self.button_stop.setDown(True)
 
 
-####
         
 
         self.setLayout(layout)
@@ -65,8 +67,16 @@ class SettingWidget(BaseWidget):
             self._setting.size.width, self._setting.size.height
         )
         self.window.media_progess.connect(self.on_media_progress)
-        self.window.show()
 
+        self.window.setWindowTitle(f"Video Window {self._setting.index + 1}")
+        self.window.show()
+        self.start()
+
+    def start(self) -> None:
+        self.window.playList = self._setting.playlist
+        self.window.start()
+
+    @DeprecationWarning
     def setupUi(self):
         sizePolicy = QSizePolicy(QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Expanding)
         sizePolicy.setHorizontalStretch(0)
@@ -161,11 +171,11 @@ class SettingWidget(BaseWidget):
 
         self.verticalLayout_5.addWidget(self.groupBox_4)
 
-        self.media_progressbar = QProgressBar(self.widget_3)
-        self.media_progressbar.setObjectName(u"media_progressbar")
-        self.media_progressbar.setValue(24)
+        self.progressbar_media = QProgressBar(self.widget_3)
+        self.progressbar_media.setObjectName(u"media_progressbar")
+        self.progressbar_media.setValue(24)
 
-        self.verticalLayout_5.addWidget(self.media_progressbar)
+        self.verticalLayout_5.addWidget(self.progressbar_media)
 
         self.verticalLayout_2.addWidget(self.widget_3)
 
@@ -252,30 +262,30 @@ class SettingWidget(BaseWidget):
         widget.setLayout(QVBoxLayout())
         widget.layout().setContentsMargins(0, 0, 0, 0)
 
-        buttons_grpbox = QGroupBox(title="Controls")
-        buttons_grpbox.setLayout(QHBoxLayout())
-        widget.layout().addWidget(buttons_grpbox)
+        grpbox_buttons = QGroupBox(title="Controls")
+        grpbox_buttons.setLayout(QHBoxLayout())
+        widget.layout().addWidget(grpbox_buttons)
 
-        self.play_button = QPushButton("", buttons_grpbox)
-        self.play_button.setIcon(QIcon(":/icons/play.png"))
-        self.pause_button = QPushButton("Pause", buttons_grpbox)
-        self.pause_button.setIcon(QIcon(":/icons/pause.png"))
-        self.stop_button = QPushButton("Stop", buttons_grpbox)
-        self.stop_button.setIcon(QIcon(":/icons/stop.png"))
-        buttons_grpbox.layout().addWidget(self.play_button)
-        buttons_grpbox.layout().addWidget(self.pause_button)
-        buttons_grpbox.layout().addWidget(self.stop_button)
+        self.button_play = QPushButton("", grpbox_buttons)
+        self.button_play.setIcon(QIcon(":/icons/play.png"))
+        self.button_pause = QPushButton("Pause", grpbox_buttons)
+        self.button_pause.setIcon(QIcon(":/icons/pause.png"))
+        self.button_stop = QPushButton("Stop", grpbox_buttons)
+        self.button_stop.setIcon(QIcon(":/icons/stop.png"))
+        grpbox_buttons.layout().addWidget(self.button_play)
+        grpbox_buttons.layout().addWidget(self.button_pause)
+        grpbox_buttons.layout().addWidget(self.button_stop)
 
-        current_media_grpbox = QGroupBox( title="Current Media")
-        current_media_grpbox.setWindowTitle("media")
-        current_media_grpbox.setLayout(QVBoxLayout())
-        widget.layout().addWidget(current_media_grpbox)
+        grpbox_current_media = QGroupBox( title="Current Media")
+        grpbox_current_media.setWindowTitle("media")
+        grpbox_current_media.setLayout(QVBoxLayout())
+        widget.layout().addWidget(grpbox_current_media)
 
-        self.media_progressbar = QProgressBar(current_media_grpbox, minimum=0, maximum=100)
-        self.media_progressbar.setValue(0)
-        current_media_grpbox.layout().addWidget(self.media_progressbar)
+        self.progressbar_media = QProgressBar(grpbox_current_media, minimum=0, maximum=100)
+        self.progressbar_media.setValue(0)
+        grpbox_current_media.layout().addWidget(self.progressbar_media)
 
-        self.play_button.setDown(True)  
+         
         
         return widget
     
@@ -292,33 +302,13 @@ class SettingWidget(BaseWidget):
         widget.setLayout(QVBoxLayout())
         widget.layout().setContentsMargins(0, 0, 0, 0)
         return widget
+    # defineSizeDimensionsTab
 
-    def retranslate_ui(self):
-        self.lock_checkbox.setText(QCoreApplication.translate("Form", u"Lock", None))
-        self.label_5.setText(QCoreApplication.translate("Form", u"TextLabel", None))
-        self.pushButton.setText(QCoreApplication.translate("Form", u"PushButton", None))
-        self.pushButton_2.setText(QCoreApplication.translate("Form", u"PushButton", None))
-        self.pushButton_3.setText(QCoreApplication.translate("Form", u"PushButton", None))
-        self.groupBox_4.setTitle(QCoreApplication.translate("Form", u"Current Media", None))
-        self.setting_tab_widget.setTabText(self.setting_tab_widget.indexOf(self.tab_1),
-                                           QCoreApplication.translate("Form", u"Media Playslist", None))
-        self.setting_tab_widget.setTabText(self.setting_tab_widget.indexOf(self.tab_2),
-                                           QCoreApplication.translate("Form", u"Timing", None))
-        self.groupBox_2.setTitle(QCoreApplication.translate("Form", u"Size", None))
-        self.label.setText(QCoreApplication.translate("Form", u"Width", None))
-        self.label_2.setText(QCoreApplication.translate("Form", u"Height", None))
-        self.groupBox.setTitle(QCoreApplication.translate("Form", u"Position", None))
-        self.label_4.setText(QCoreApplication.translate("Form", u"Top", None))
-        self.label_3.setText(QCoreApplication.translate("Form", u"Left", None))
-        self.setting_tab_widget.setTabText(self.setting_tab_widget.indexOf(self.tab_3),
-                                           QCoreApplication.translate("Form", u"Dimensions", None))
-
-    # retranslateUi
 
     @Slot(float)
     def on_media_progress(self, progress: float):
         self.logger.debug(f"{self} progress  {progress:0.2f}  ")
-        self.media_progressbar.setValue(progress)
+        self.progressbar_media.setValue(progress)
 
     def __str__(self):
         return f"setting window {self._setting.index + 1}:"

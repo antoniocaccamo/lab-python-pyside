@@ -2,6 +2,7 @@ import logging
 import __future__
 import javaproperties
 
+from media import MediaPlaylist, PhotoMedia, WatchMedia
 from preferences import Preference, Size, Position, Setting
 
 
@@ -48,6 +49,15 @@ class PreferenceService(BaseService):
                     st = Setting(index)
                     st.size = sz
                     st.position = pt
+                    
+                    self.logger.info(f"setting {index + 1}: dummy playlist")
+                    playlist = MediaPlaylist()
+                    playlist.add_media(WatchMedia())
+                    playlist.add_media(PhotoMedia("media/photo1.jpg"))
+                    
+                    st.playlist = playlist
+
+
                     self._preference.settings_add(st)
 
             except Exception as e:

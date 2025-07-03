@@ -4,6 +4,7 @@ import sys
 # from colorwidget import QColor
 from PySide6.QtGui import QIcon
 from PySide6.QtWidgets import QApplication
+from PySide6.QtCore import QLibraryInfo, QTranslator, QLocale
 
 from ui.mainwindow import MainWindow
 
@@ -19,7 +20,19 @@ if __name__ == "__main__":
     container.init_resources()
     container.wire(modules=[__name__])
 
+
     app = QApplication(sys.argv)
+
+    path = QLibraryInfo.location(QLibraryInfo.TranslationsPath)
+    translator = QTranslator(app)
+    if translator.load(QLocale.system(), 'qtbase', '_', path):
+        app.installTranslator(translator)
+    translator = QTranslator(app)
+    path = ':/translations'
+    #if translator.load(QLocale.system(), 'example', '_', path):
+    app.installTranslator(translator)
+
+   
     app.setWindowIcon(QIcon(":/icons/pyplayer.ico"))
     window = MainWindow()
     window.show()

@@ -37,7 +37,8 @@ class MainWindow(QMainWindow):
         tabs.setMovable(True)
 
         for setting in pref.settings:
-            title = f"Video Window {setting.index + 1}"
+            tr  =self.tr("Video Window")
+            title = f"{tr} {setting.index + 1}"
             wdg = SettingWidget(tabs, setting)
             tabs.addTab(wdg, title)
             self._listOfSettingWidgets.append(wdg)

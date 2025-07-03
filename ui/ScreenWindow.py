@@ -1,7 +1,9 @@
+from __future__ import annotations
+
 from PySide6.QtCore import Signal, Slot
 from typing import Dict
 
-from media import BaseMedia, MediaTypeEnum, WatchMedia
+from media import BaseMedia, MediaPlaylist, MediaTypeEnum, WatchMedia
 
 
 from PySide6.QtGui import QIcon
@@ -30,8 +32,11 @@ class ScreenWindow(BaseWidget):
     _current_player_widget: BaseWidget
     _current_media: BaseMedia
     _screenWidgets: Dict[MediaTypeEnum, BaseWidget]
+    _playList: MediaPlaylist = None
 
     media_progess = Signal(float)
+
+
 
     def __init__(self, parent: QWidget, index: int = 0):
         super().__init__(parent)
@@ -56,26 +61,50 @@ class ScreenWindow(BaseWidget):
         self._current_media.duration = 5.0
         self.logger.info(f"{self} created ")
 
-        self.play()
+    @property
+    def playList(self) -> MediaPlaylist:
+        return self._playList
 
-    def __str__(self):
-        return f"window {self._index + 1}:"
+    @playList.setter
+    def playList(self, value: MediaPlaylist):
+        self._playList = value
+        
+    
+    def start(self) -> None:
+        assert self._playList, "PlayList must be set before starting the player"
+        self.logger.info(f"{self} starting with playlist: {self._playList}")
+        self._current_media = self._playList.get_current_media()
+        self.__play()
 
-    def play(self) -> None:
+    def stop(self) -> None:
+        pass
+
+    def pause(self) -> None:
+        pass
+
+    def resume(self) -> None:
+        pass
+
+    
+    def __play(self) -> None:
         self.logger.info(f"{self} playing  [{self._current_media}] ")
         self.layout().setCurrentIndex(self._current_media.media_type.value)
         self._current_player_widget = self.layout().currentWidget()
 
         self._current_player_widget.media_progess.connect(self.on_media_progress)
-        self._current_player_widget.media_ended.connect(self.next)
+        self._current_player_widget.media_ended.connect(self.__next)
         self.media_progess.emit(0)
         self._current_player_widget.play(self._current_media)
 
-    def next(self):
+    def __next(self):
         self.logger.info(f"{self} ended    [{self._current_media}]")
         self._current_player_widget.media_progess.disconnect()
         self._current_player_widget.media_ended.disconnect()
-        self.play()
+        self._current_media = self._playList.get_current_media()
+        self.__play()
+
+    def __str__(self):
+        return f"window {self._index + 1}:"
 
     @Slot(float)
     def on_media_progress(self, progress: float):

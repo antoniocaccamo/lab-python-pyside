@@ -1,6 +1,8 @@
 from typing import List
 import __future__
 
+from media import MediaPlaylist
+
 class Size:
     _width: int
     _height: int
@@ -51,6 +53,7 @@ class Setting:
     __index: int
     _size: Size
     _position: Position
+    _playlist : MediaPlaylist = None
 
     def __init__(self, index: int):
         self.__index = index
@@ -74,6 +77,14 @@ class Setting:
     @position.setter
     def position(self, value: Position):
         self._position = value
+
+    @property
+    def playlist(self) -> MediaPlaylist:
+        return self._playlist
+    
+    @playlist.setter
+    def playlist(self, value: MediaPlaylist):
+        self._playlist = value
 
 
 class Preference:
