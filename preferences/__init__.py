@@ -1,7 +1,7 @@
 from typing import List
 import __future__
 
-from media import MediaPlaylist
+from media.MediaPlaylist import MediaPlaylist
 
 class Size:
     _width: int

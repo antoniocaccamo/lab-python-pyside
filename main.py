@@ -6,7 +6,7 @@ from PySide6.QtGui import QIcon
 from PySide6.QtWidgets import QApplication
 from PySide6.QtCore import QLibraryInfo, QTranslator, QLocale
 
-from ui.mainwindow import MainWindow
+from ui import MainWindow
 
 props = {}
 
@@ -31,8 +31,8 @@ if __name__ == "__main__":
     path = ':/translations'
     #if translator.load(QLocale.system(), 'example', '_', path):
     app.installTranslator(translator)
-
-   
+    app.setApplicationName("PyPlayer")
+    app.setApplicationVersion("0.1.0")
     app.setWindowIcon(QIcon(":/icons/pyplayer.ico"))
     window = MainWindow()
     window.show()

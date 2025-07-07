@@ -1,7 +1,7 @@
 from PySide6.QtWidgets import QWidget
 
-from media import MediaTypeEnum
-from ui.players.base import BasePlayerWidget
+from media.MediaTypeEnum import MediaTypeEnum
+from players import BasePlayerWidget
 
 
 class HiddenPlayerWidget(BasePlayerWidget):

@@ -3,8 +3,8 @@ import datetime
 from PySide6.QtCore import QTimer, Slot, QTime
 from PySide6.QtWidgets import QLCDNumber, QWidget, QVBoxLayout
 
-from media import MediaTypeEnum
-from ui.players.base import BasePlayerWidget
+from media.MediaTypeEnum import MediaTypeEnum
+from players import BasePlayerWidget
 
 
 class DigitalClockPlayerWidget(BasePlayerWidget):

@@ -3,10 +3,16 @@ from PySide6.QtWidgets import QWidget
 from PySide6.QtWidgets import QLCDNumber, QWidget, QVBoxLayout, QLabel
 
 from media import MediaTypeEnum
-from ui.players.base import BasePlayerWidget
+from players import BasePlayerWidget
 
 
 class PhotoPlayerWidget(BasePlayerWidget):
+
+    """
+    PhotoPlayerWidget is a widget for displaying photo content.
+    It is designed to show a simple label indicating that it is a photo player.
+    """
+
     def __init__(self, parent: QWidget = None):
         super().__init__(parent, MediaTypeEnum.Photo)
         self.setLayout(QVBoxLayout())

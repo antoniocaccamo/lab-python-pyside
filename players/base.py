@@ -4,7 +4,8 @@ import logging
 from PySide6.QtCore import QTimer, Signal, Slot
 from PySide6.QtWidgets import QWidget
 
-from media import MediaTypeEnum, BaseMedia
+from media.BaseMedia import BaseMedia
+from media.MediaTypeEnum import MediaTypeEnum
 
 
 class BasePlayerWidget(QWidget):

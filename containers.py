@@ -1,9 +1,7 @@
 import logging.config
 
 from dependency_injector import containers, providers
-
-import services
-
+from services import PreferenceService
 
 class Container(containers.DeclarativeContainer):
     config = providers.Configuration(ini_files=["config.ini"])
@@ -14,5 +12,5 @@ class Container(containers.DeclarativeContainer):
     )
 
     preference_service = providers.Singleton(
-        services.PreferenceService
+        PreferenceService
     )

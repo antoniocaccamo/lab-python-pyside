@@ -3,7 +3,7 @@ from __future__ import annotations
 from PySide6.QtCore import Signal, Slot
 from typing import Dict
 
-from media import BaseMedia, MediaPlaylist, MediaTypeEnum, WatchMedia
+from media.MediaPlaylist import MediaPlaylist
 
 
 from PySide6.QtGui import QIcon
@@ -13,15 +13,14 @@ from PySide6.QtCore import (QCoreApplication, QDate, QDateTime, QLocale,
                             QMetaObject, QObject, QPoint, QRect,
                             QSize, QTime, QUrl, Qt)
 
-from ui.base import BaseWidget
-from ui.players import base
-from ui.players.black import BlackPlayerWidget
-from ui.players.digitalclock import DigitalClockPlayerWidget
-from ui.players.hidden import HiddenPlayerWidget
-from ui.players.photo import PhotoPlayerWidget
-from ui.players.video import VideoPlayerWidget
-from ui.players.web import WebPlayerWidget
 
+from media.BaseMedia import BaseMedia
+from media.MediaTypeEnum import MediaTypeEnum
+from media.WatchMedia import WatchMedia
+from players import BasePlayerWidget, BlackPlayerWidget, DigitalClockPlayerWidget, \
+    HiddenPlayerWidget, PhotoPlayerWidget, VideoPlayerWidget, WebPlayerWidget
+
+from ui import BaseWidget
 
 class ScreenWindow(BaseWidget):
     """
@@ -31,7 +30,7 @@ class ScreenWindow(BaseWidget):
     _index = 0
     _current_player_widget: BaseWidget
     _current_media: BaseMedia
-    _screenWidgets: Dict[MediaTypeEnum, BaseWidget]
+    _screenWidgets: Dict[MediaTypeEnum, BasePlayerWidget]
     _playList: MediaPlaylist = None
 
     media_progess = Signal(float)

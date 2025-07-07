@@ -4,12 +4,14 @@ from PySide6.QtMultimediaWidgets import QVideoWidget
 from PySide6.QtWidgets import QWidget, QVBoxLayout
 
 from media import MediaTypeEnum
-from ui.players.base import BasePlayerWidget
+from players import BasePlayerWidget
 
 
 class VideoPlayerWidget(BasePlayerWidget):
+    
     """
-
+    VideoPlayerWidget is a widget for playing video content using QMediaPlayer and QVideoWidget.
+    It is designed to handle video playback, including media status changes and error handling.
     """
     _player : QMediaPlayer
     #_vout : QVideoWidget
