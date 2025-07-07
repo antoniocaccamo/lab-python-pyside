@@ -22,3 +22,4 @@ class WebPlayerWidget(BasePlayerWidget):
     def play(self, media):
         self.__wiew.load(QUrl(media.local_path()))
         super().play(media)
+        self.logger.info(f"playing {media}")

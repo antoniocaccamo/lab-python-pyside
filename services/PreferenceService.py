@@ -1,20 +1,21 @@
-from media.MediaPlaylist import MediaPlaylist
-from media.PhotoMedia import PhotoMedia
-from media.WatchMedia import WatchMedia
-from media.WebMedia import WebMedia
-from preferences import Position, Preference, Setting, Size
-from services.BaseService import BaseService
 
-
+from media import MediaPlaylist, PhotoMedia, WatchMedia, WebMedia
+from preferences import Preference, Position, Setting, Size
+from services import BaseService, MediaPlaylistIOService
+from dependency_injector.wiring import Provide
 import javaproperties
-
+#from di import DIContainer
+from services import MediaPlaylistIOService
 
 class PreferenceService(BaseService):
+
+    _media_playlist_io_service : MediaPlaylistIOService 
     _preference: Preference
 
-    def __init__(self):
+    def __init__(self , media_playlist_io_service : MediaPlaylistIOService ):
         super().__init__()
-
+        assert media_playlist_io_service, "MediaPlaylistIOService cannot be None"
+        self._media_playlist_io_service = media_playlist_io_service
         with open("pref.properties", "r", encoding="utf-8") as f:
             self.logger.info(f"reading file: pref.properties ")
             try:
@@ -34,26 +35,21 @@ class PreferenceService(BaseService):
 
                 for index in range(0, int(props['app.player.video.windows.number'])):
                     sz = Size()
-                    sz.width = int(props[f"app.player.{index + 1}.size.width"])
+                    sz.width  = int(props[f"app.player.{index + 1}.size.width"])
                     sz.height = int(props[f"app.player.{index + 1}.size.height"])
 
                     pt = Position()
                     pt.left = int(props[f"app.player.{index + 1}.location.x"])
-                    pt.top = int(props[f"app.player.{index + 1}.location.y"])
+                    pt.top  = int(props[f"app.player.{index + 1}.location.y"])
 
                     st = Setting(index)
                     st.size = sz
                     st.position = pt
 
-                    self.logger.info(f"setting {index + 1}: dummy playlist")
-                    playlist = MediaPlaylist()
-                    playlist.add_media(WatchMedia())
-                    playlist.add_media(PhotoMedia("media/photo1.jpg"))
-                    playlist.add_media(WebMedia("https://www.google.com"))
-
-                    st.playlist = playlist
-
-
+                    
+                    st.playlist = self._media_playlist_io_service.load_playlist(
+                        props[f"app.player.{index + 1}.sequence.file"]
+                    )
                     self._preference.settings_add(st)
 
             except Exception as e:

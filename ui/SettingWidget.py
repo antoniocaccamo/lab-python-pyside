@@ -1,5 +1,5 @@
 from __future__ import annotations
-from preferences import Setting
+from preferences.Setting import Setting
 
 from PySide6.QtGui import QIcon
 

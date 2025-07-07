@@ -1,4 +1,4 @@
-from .basewidget import BaseWidget
-from .screenwindow import ScreenWindow
+from .basewidget    import BaseWidget
+from .screenwindow  import ScreenWindow
 from .settingwidget import SettingWidget
-from .mainwindow import MainWindow  
+from .mainwindow    import MainWindow  

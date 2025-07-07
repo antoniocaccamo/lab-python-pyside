@@ -7,10 +7,9 @@ from dependency_injector.wiring import Provide
 from typing import List
 
 import resources  # noqa: F401
-from containers import Container
+from di import DIContainer
 from services import PreferenceService
-
-from ui.settingwidget import SettingWidget
+from ui import SettingWidget
 
 
 class MainWindow(QMainWindow):
@@ -20,7 +19,7 @@ class MainWindow(QMainWindow):
 
     _listOfSettingWidgets: List[SettingWidget] = list()
 
-    def __init__(self, preferenceService: PreferenceService = Provide[Container.preference_service]):
+    def __init__(self, preferenceService: PreferenceService = Provide[DIContainer.preference_service]):
         super().__init__()
         self.logger = logging.getLogger(
             f"{__name__}.{self.__class__.__name__}",
